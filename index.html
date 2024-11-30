@@ -5,10 +5,50 @@
     <title>AR Model Viewer</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ar.js@2.3.1/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@7.0.1/dist/aframe-extras.min.js"></script>
     <script>
-        // Add passive event listeners for better performance
+        // Add passive event listeners to avoid performance warnings
         document.addEventListener('touchstart', () => {}, { passive: true });
         document.addEventListener('touchmove', () => {}, { passive: true });
+
+        // Gesture handler component for touch interaction
+        AFRAME.registerComponent('gesture-handler', {
+          init: function () {
+            const el = this.el;
+            let scale = el.getAttribute('scale');
+            let initialScale = scale.x;
+            let pinchStartDistance = 0;
+            let isPinching = false;
+
+            // Detect touch gestures
+            el.sceneEl.canvas.addEventListener('touchmove', (e) => {
+              if (e.touches.length === 2) {
+                isPinching = true;
+                const currentDistance = Math.sqrt(
+                  Math.pow(e.touches[0].clientX - e.touches[1].clientX, 2) +
+                  Math.pow(e.touches[0].clientY - e.touches[1].clientY, 2)
+                );
+
+                if (pinchStartDistance === 0) {
+                  pinchStartDistance = currentDistance;
+                }
+
+                const scaleChange = currentDistance / pinchStartDistance;
+                const newScale = initialScale * scaleChange;
+
+                el.setAttribute('scale', `${newScale} ${newScale} ${newScale}`);
+              }
+            });
+
+            el.sceneEl.canvas.addEventListener('touchend', () => {
+              if (isPinching) {
+                initialScale = el.getAttribute('scale').x;
+                pinchStartDistance = 0;
+                isPinching = false;
+              }
+            });
+          }
+        });
     </script>
     <style>
         body {
@@ -24,19 +64,19 @@
         vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true;"
     >
-        <!-- Assets -->
+        <!-- Preload 3D Model -->
         <a-assets>
             <a-asset-item id="komaki-model" src="Komaki MG PRO_V8.glb"></a-asset-item>
         </a-assets>
 
-        <!-- Marker and 3D Model -->
+        <!-- AR Marker -->
         <a-marker-camera preset="hiro">
             <a-entity 
                 gltf-model="#komaki-model" 
                 scale="0.1 0.1 0.1" 
                 position="0 0 0" 
-                rotation="0 90 0"
-            >
+                rotation="0 90 0" 
+                gesture-handler>
             </a-entity>
         </a-marker-camera>
     </a-scene>
