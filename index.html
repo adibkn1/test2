@@ -2,32 +2,43 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>AR Model Viewer</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ar.js@2.3.1/aframe/build/aframe-ar.min.js"></script>
     <script>
-        // Patch passive event listeners
-        document.addEventListener('touchstart', function () {}, { passive: true });
-        document.addEventListener('touchmove', function () {}, { passive: true });
+        // Add passive event listeners for better performance
+        document.addEventListener('touchstart', () => {}, { passive: true });
+        document.addEventListener('touchmove', () => {}, { passive: true });
     </script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body>
     <a-scene 
         embedded 
-        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true;"
     >
+        <!-- Assets -->
         <a-assets>
             <a-asset-item id="komaki-model" src="Komaki MG PRO_V8.glb"></a-asset-item>
         </a-assets>
 
-        <a-entity 
-            gltf-model="#komaki-model" 
-            scale="0.1 0.1 0.1"
-            position="0 0.5 0"
-            rotation="0 90 0"
-        ></a-entity>
-
-        <a-marker-camera preset="hiro"></a-marker-camera>
+        <!-- Marker and 3D Model -->
+        <a-marker-camera preset="hiro">
+            <a-entity 
+                gltf-model="#komaki-model" 
+                scale="0.1 0.1 0.1" 
+                position="0 0 0" 
+                rotation="0 90 0"
+            >
+            </a-entity>
+        </a-marker-camera>
     </a-scene>
 </body>
 </html>
