@@ -2,37 +2,27 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.3.0/aframe/build/aframe-ar.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.3.1/aframe/build/aframe-ar.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
     <a-scene 
         embedded 
-        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
     >
         <a-assets>
-            <a-asset-item id="model" src="Komaki MG PRO_V8.glb"></a-asset-item>
+            <a-asset-item id="komaki-model" src="Komaki MG PRO_V8.glb"></a-asset-item>
         </a-assets>
 
         <a-entity 
-            gltf-model="#model" 
-            scale="0.5 0.5 0.5"
+            gltf-model="#komaki-model" 
+            scale="0.3 0.3 0.3"
             position="0 0 0"
+            rotation="0 0 0"
         ></a-entity>
 
         <a-marker-camera preset="hiro"></a-marker-camera>
     </a-scene>
-
-    <script>
-        // GLTF Loading with Draco Decompression
-        const loader = new THREE.GLTFLoader();
-        const dracoLoader = new THREE.DRACOLoader();
-        dracoLoader.setDecoderPath('path/to/draco/');
-        loader.setDRACOLoader(dracoLoader);
-    </script>
 </body>
 </html>
