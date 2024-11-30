@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@2.2.2/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene 
+        embedded 
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+        vr-mode-ui="enabled: false"
+    >
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+
+        <!-- 3D Model -->
+        <a-assets>
+            <a-asset-item id="model" src="path/to/your/model.gltf"></a-asset-item>
+        </a-assets>
+
+        <a-entity 
+            gltf-model="#model" 
+            scale="0.5 0.5 0.5" 
+            position="0 0 0"
+            rotation="0 0 0"
+            ar-tracker
+        ></a-entity>
+    </a-scene>
+
+    <script>
+        // Advanced plane tracking and model placement
+        AFRAME.registerComponent('ar-tracker', {
+            init: function () {
+                const el = this.el;
+                const scene = document.querySelector('a-scene');
+
+                scene.addEventListener('markerFound', function() {
+                    // Plane detection logic
+                    el.object3D.visible = true;
+                });
+
+                scene.addEventListener('markerLost', function() {
+                    // Hide model when tracking is lost
+                    el.object3D.visible = false;
+                });
+
+                // Optional: Add interactive scaling/rotation
+                el.addEventListener('click', function() {
+                    const currentScale = el.getAttribute('scale');
+                    el.setAttribute('scale', {
+                        x: currentScale.x * 1.2,
+                        y: currentScale.y * 1.2,
+                        z: currentScale.z * 1.2
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
